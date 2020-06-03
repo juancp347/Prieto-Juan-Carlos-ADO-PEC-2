@@ -1,0 +1,59 @@
+---
+title: "Análisis de Datos Ómicos. Juan Carlos Prieto Prieto. PEC 2"
+author: "Prieto Prieto, Juan Carlos"
+date: "1/6/2020"
+output: word_document
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Comenzaremos importando los dos archivos csv en nuestro proyecto:
+
+```{r}
+targets <- read_csv("C:/Users/usuario/Desktop/Master/3er Semestre/Análisis datos ómicos/PEC2/PEC 2/targets.csv")
+dim(targets)
+```
+
+
+```{r}
+counts <- read.csv("C:/Users/usuario/Desktop/Master/3er Semestre/Análisis datos ómicos/PEC2/PEC 2/counts.csv", header=T, sep=";", row.names = 1)
+dim(counts)
+```
+
+
+```{r}
+set.seed(123456)
+library(sampling)
+muestra <- strata(targets, stratanames = c("Group"), size = c(10,10,10), method = "srswor")
+```
+
+Con la muestra aleatoria que hemos obtenido con la función strata(), creamos nuestro nuevo dataframe con todas las variables de targets:
+
+```{r}
+muestra2 <- data.frame(targets[c(29, 40, 100, 149, 167, 186, 211, 251, 253, 290, 31, 53, 62, 107, 111, 120, 155, 225, 237, 280, 22, 30, 37, 83, 171, 188, 199, 203, 261, 288),])
+```
+
+A continuación seleccionamos el subset del csv counts en base a los nombres de las columnas:
+
+```{r}
+counts2 <- counts[,c("GTEX-11NV4-0626-SM-5N9BR","GTEX-11XUK-0226-SM-5EQLW","GTEX-13NZ9-1126-SM-5MR37","GTEX-14BMU-0226-SM-5S2QA","GTEX-PLZ4-1226-SM-2I5FE","GTEX-R55G-0726-SM-2TC6J","GTEX-TMMY-0826-SM-33HB9","GTEX-YFC4-2626-SM-5P9FQ","GTEX-YJ89-0726-SM-5P9F7","GTEX-ZYY3-1926-SM-5GZXS","GTEX-11OF3-0626-SM-5BC4Y","GTEX-12WSH-0226-SM-5GCOG","GTEX-13112-0326-SM-5P9IW","GTEX-13O61-0226-SM-5KM52","GTEX-13OW5-0626-SM-5J2N2","GTEX-13RTK-0326-SM-5RQHS","GTEX-OHPK-2626-SM-2HMK9","GTEX-X15G-0526-SM-3NMB7","GTEX-XYKS-0826-SM-4BRVF","GTEX-ZVZP-1026-SM-5GICI","GTEX-11EQ9-0626-SM-5A5K1","GTEX-11O72-2326-SM-5BC7H","GTEX-11TUW-0226-SM-5LU8X","GTEX-13FH7-0126-SM-5KLZ1","GTEX-Q2AH-0726-SM-2I3EA","GTEX-RM2N-0526-SM-2TF4N","GTEX-S341-0226-SM-5S2VG","GTEX-SIU8-0626-SM-2XCDN","GTEX-ZE7O-1126-SM-57WC8","GTEX-ZYVF-1126-SM-5E458")]
+```
+
+```{r}
+rownames(counts2) <- counts2[,1]
+counts2[,1] <- NULL
+```
+
+```{r}
+counts3 <- t(counts2)
+```
+
+```{r}
+df <- cbind(muestra2, counts3)
+```
+
+```{r}
+install.packages("edgeR")
+```
